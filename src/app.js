@@ -18,6 +18,7 @@ app.set("views",viewPath);
 app.use(express.static(publicDirectoryPath));
 hbs.registerPartials(partialPath);
 
+ //api to find the weather
 app.get("/api/weather", function (req, res) {
     if(!req.query.city) {
         res.status(400).send("Please Enter the City");
@@ -26,10 +27,11 @@ app.get("/api/weather", function (req, res) {
     geocode(req.query.city, function(data) {
         forecast(data, function(result) {
             res.status(200).send(result);
-        })
-    })
-})
+        });
+    });
+});
 
+//rendering pages
 app.get("/help", function(req, res) {
 res.render("help", {
         title: "Help Page"
