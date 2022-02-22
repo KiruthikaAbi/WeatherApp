@@ -12,28 +12,36 @@ const partialPath = path.join(__dirname, "../templates/partials");
 
 //setup handle bar
 app.set("view engine", "hbs");
-app.set("views",viewPath);
+app.set("views", viewPath);
 
 //setup static Directory
 app.use(express.static(publicDirectoryPath));
 hbs.registerPartials(partialPath);
 
- //api to find the weather
+//api to find the weather
 app.get("/api/weather", function (req, res) {
-    if(!req.query.city) {
+    if (!req.query.city) {
         res.status(400).send("Please Enter the City");
         return;
     }
-    geocode(req.query.city, function(data) {
-        forecast(data, function(result) {
+    geocode(req.query.city, function (error, data) {
+        if (error) {
+            res.status(500).send("Internal Server Error");
+            return;
+        }
+        forecast(data, function (error, result) {
+            if (error) {
+                res.status(500).send("Internal Server Error");
+                return;
+            }
             res.status(200).send(result);
         });
     });
 });
 
 //rendering pages
-app.get("/help", function(req, res) {
-res.render("help", {
+app.get("/help", function (req, res) {
+    res.render("help", {
         title: "Help Page"
     });
 });

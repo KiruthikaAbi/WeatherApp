@@ -1,8 +1,11 @@
 const request = require('request');
 
-const geocode = function (city,cb) {
+const geocode = function (city, cb) {
     request(`https://api.mapbox.com/geocoding/v5/mapbox.places/${city}.json?access_token=pk.eyJ1Ijoia2lydXRoaWthdGFtaWxhcnV2aSIsImEiOiJja3pyNXgyMHQwZDRmMnVwYWNnOW54OTJtIn0.mcpY_pqAKTs14hMUrhGVuQ`, function (error, response, body) {
-        console.error('error:', error);
+        if (error) {
+            cb (error, undefined);
+            return;
+        }
 
         var result = JSON.parse(body);
         var data = {
@@ -10,7 +13,7 @@ const geocode = function (city,cb) {
             longitude: result.features[0].center[0]
         }
 
-        cb(data);
+        cb(undefined, data);
     });
 }
 
